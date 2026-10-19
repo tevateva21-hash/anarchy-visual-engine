@@ -1,0 +1,1 @@
+{"name":"@anarchy/audio-analysis","private":true,"version":"0.1.0","type":"module","exports":"./src/index.ts","dependencies":{"@anarchy/contracts":"workspace:*"}}

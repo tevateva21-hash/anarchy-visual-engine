@@ -1,6 +1,6 @@
 # Anarchy Visual Engine — architecture proposée
 
-Statut : proposition initiale. Le dépôt inspecté est vide, sans code, manifeste, historique ni contraintes existantes. Ce document définit une cible ; aucun composant ci-dessous n’est encore implémenté.
+Statut : architecture cible, proposée initialement à partir d’un dépôt vide. Le Sprint 2 implémente désormais le studio et l’analyse audio partagée ; voir [les conventions et limites de cette implémentation](sprint-2-audio-analysis.md). Les autres composants restent à développer.
 
 ## Périmètre initial
 
@@ -179,4 +179,4 @@ Vitest couvrira l’analyse avec silence, sinus et impulsions synthétiques, la 
 
 Playwright exercera import, lecture, changement de preset, sélection et demande d’export avec un petit fichier de test autorisé. Un test d’intégration réel rendra un extrait puis utilisera `ffprobe` pour contrôler H.264/AAC, dimensions, FPS et durée ; analyser aussi l’alignement des impulsions et des événements visuels. Une réponse HTTP ou un fichier MP4 non vide ne suffit pas.
 
-Ordre conseillé : contrats et chronologie ; analyse et premier preset Canvas ; aperçu avec seek ; transfert local et export court ; validation de synchronisation et nettoyage ; interface complète. Prévoir build et vérification TypeScript en plus des tests. Aucun test, build ou rendu applicatif n’a été exécuté à ce stade : le présent changement est uniquement documentaire.
+Ordre conseillé : contrats et chronologie ; analyse et premier preset Canvas ; aperçu avec seek ; transfert local et export court ; validation de synchronisation et nettoyage ; interface complète. Prévoir build et vérification TypeScript en plus des tests. Les validations désormais disponibles pour le Sprint 2 sont décrites dans [sa documentation](sprint-2-audio-analysis.md) ; le rendu vidéo reste hors de son périmètre.
