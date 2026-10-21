@@ -13,10 +13,10 @@ test('imports WAV, displays meaningful features and waveform, seeks and reuses c
   await expect(page.getByTestId('RMS')).toHaveText(/0\.35/);
   expect(Number(await page.getByTestId('Médiums').textContent())).toBeGreaterThan(0.12);
   expect(Number(await page.getByTestId('Basses').textContent())).toBeLessThan(0.001);
-  const pixels = await page.locator('canvas').evaluate((canvas: HTMLCanvasElement) => {
+  const pixels = await page.getByRole('img', { name: /Waveform/ }).evaluate((canvas: HTMLCanvasElement) => {
     const data = canvas.getContext('2d')!.getImageData(0, 0, canvas.width, canvas.height).data;
-    let purple = 0; for (let i = 0; i < data.length; i += 4) if (data[i] > 80 && data[i + 2] > 150) purple++;
-    return purple;
+    let signalPixels = 0; for (let i = 0; i < data.length; i += 4) if (data[i] > 150 && data[i + 1] > 70 && data[i + 2] < 120) signalPixels++;
+    return signalPixels;
   });
   expect(pixels).toBeGreaterThan(100);
   await page.reload();

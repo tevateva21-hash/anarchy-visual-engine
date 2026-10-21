@@ -36,3 +36,9 @@ export type AnalysisResponse =
   | { type: 'progress'; fraction: number }
   | { type: 'complete'; analysis: AudioAnalysis }
   | { type: 'error'; message: string };
+
+export type {
+  SceneId, RenderStyle, PaletteId, RetroRenderSettings, RetroEffects,
+  PresetParameterPath, RetroPresetConfig, CompatibilityRule,
+  RetroPresetDefinition, RandomizeRequest,
+} from './presets';

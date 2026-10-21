@@ -1,10 +1,24 @@
 # Anarchy Visual Engine — architecture proposée
 
-Statut : architecture cible, proposée initialement à partir d’un dépôt vide. Le Sprint 2 implémente désormais le studio et l’analyse audio partagée ; voir [les conventions et limites de cette implémentation](sprint-2-audio-analysis.md). Les autres composants restent à développer.
+Statut : architecture cible, adaptée à la direction rétro M1 à partir du studio existant. Le Sprint 2 implémente désormais le studio et l’analyse audio partagée ; voir [les conventions et limites de cette implémentation](sprint-2-audio-analysis.md). Les autres composants restent à développer.
+
+## Direction rétro et état réel après inspection
+
+L’application existante est conservée : `apps/studio` contient l’import, le lecteur natif, le seek, la waveform et les indicateurs. `packages/audio-analysis` réalise le DSP dans un Worker ; IndexedDB garde les analyses. Les fichiers utilisateur restent locaux. Le moteur de scènes, la configuration de presets et le renderer vidéo manquent encore. La sélection actuelle est une position de lecture, pas encore un intervalle d’export.
+
+L’identité cible est sombre, industrielle, étrange et cinématographique, inspirée de la direction Anarchy Paris : silhouettes d’usines, architecture oppressante, profondeur, lumière rare, textures tramées. Aucun égaliseur ou empilement de barres ne sert de scène. Deux langages sont prévus : pixels 16-bit à palette restreinte et géométrie 32-bit low-poly PS1. Ils ne décrivent pas une émulation matérielle exacte.
+
+**M1 uniquement** ajoute une étude Industrial City à 320×180 en Canvas 2D, sans lissage. Le dessin reçoit un instant explicite, ne conserve aucun état entre images et ne dépend pas de l’audio. Le studio permet de choisir la palette de cette étude et son instant ; il conserve le lecteur, les données audio et le cache. Le temps de la démo est volontairement séparé de la position du morceau. Pas de Three.js, Randomize, verrouillage interactif, sauvegarde de preset ou MP4 dans M1.
+
+Le dessin de l’étude reste dans `apps/studio/src/retro`, sans introduire prématurément le moteur générique M2. Lors de M2, il pourra être extrait vers `packages/visual-engine` sans dépendance React : `draw(context, config, sourceTime)`. L’agrandissement CSS utilise nearest-neighbor ; aucun filtre CSS animé ne doit ajouter une image dépendante de l’horloge au rendu. La démo est consultable sans importer un fichier et sans animation automatique.
+
+Les contrats de presets dans `packages/contracts/src/presets.ts` décrivent les quatre scènes cibles, palettes, styles, caméras discriminées selon le style, effets, intensité, seed uint32, chemins verrouillables et règles de compatibilité déclaratives. Ce sont des contrats de conception : la validation runtime, la résolution des contraintes, le PRNG versionné, la sérialisation JSON et les migrations seront réalisés en M4. Aucun JSON utilisateur ne doit être considéré valide du seul fait de ces types TypeScript. Les instantanés complets de configuration et les versions seront des entrées communes de l’aperçu et de l’export M5.
+
+Plan incrémental et critères détaillés : [ROADMAP.md](../ROADMAP.md). M2 prépare les quatre scènes ; M3 branche les caractéristiques déjà disponibles ; M4 ajoute Randomize, locks et persistance ; M5 assure l’export déterministe ; M6 étend le studio sans déstabiliser ces bases.
 
 ## Périmètre initial
 
-Importer un MP3 ou WAV, analyser le signal dans le navigateur, prévisualiser un preset abstrait Canvas 2D, choisir un extrait, puis produire localement un MP4 H.264 avec audio AAC. L’interface utilise React, Vite, TypeScript et Tailwind CSS. Three.js reste optionnel, pour un futur preset qui le justifie.
+Importer un MP3 ou WAV, analyser le signal dans le navigateur, prévisualiser des scènes rétro 16-bit pixel art et 32-bit low-poly PS1, choisir un extrait, puis produire localement un MP4 H.264 avec audio AAC. L’interface utilise React, Vite, TypeScript et Tailwind CSS. Three.js reste optionnel, pour un futur preset qui le justifie.
 
 Le MVP fonctionne sur une seule machine : navigateur et service de rendu Node.js local. Une application Vite seule ne peut ni lancer FFmpeg ni donner son fichier local à un autre processus. Le rendu distant et le packaging desktop constituent des évolutions distinctes.
 

@@ -1,6 +1,6 @@
 # Anarchy Visual Engine
 
-Sprint 2 : import MP3/WAV et analyse audio hors ligne, waveform et indicateurs. React/Vite/TypeScript/Tailwind ; analyse indépendante dans un Worker. Pas encore de preset visuel ni d’export vidéo.
+Studio existant : import MP3/WAV et analyse audio hors ligne, waveform, lecteur et indicateurs. M1 ajoute une direction rétro industrielle et une étude Industrial City en pixel art, avec trois palettes et un instant de démonstration. React/Vite/TypeScript/Tailwind ; analyse indépendante dans un Worker. La démo n’est pas encore audio-réactive ; pas de Randomize complet, de sauvegarde de presets ou d’export vidéo.
 
 ## Développement
 
@@ -25,3 +25,5 @@ Pour utiliser un Chromium déjà installé : `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PAT
 Dans un sandbox qui ne permet pas d’écrire sous le répertoire utilisateur, définir `XDG_DATA_HOME=/tmp/anarchy-pnpm-data` et `XDG_CACHE_HOME=/tmp/anarchy-cache` avant les commandes pnpm. Le store pnpm est local au dépôt et ignoré par Git.
 
 Voir [l’analyse audio](docs/sprint-2-audio-analysis.md), [l’architecture cible](docs/architecture.md) et [les consignes](AGENTS.md).
+
+Direction rétro : [M1 et choix artistiques](docs/retro-art-direction.md). Plan de livraison, issues et Project prêts à publier : [ROADMAP.md](ROADMAP.md).
