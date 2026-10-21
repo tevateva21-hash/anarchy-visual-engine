@@ -37,7 +37,7 @@ Labels : `retro`, `studio`. Conserver les flux existants ; documenter compositio
 Labels : `retro`, `test`. Première démonstration artistique, indépendante de l’analyse audio.
 
 - [ ] Canvas intrinsèque 320×180, nearest-neighbor, aucun lissage ; silhouettes industrielles, tramage et lumière rare.
-- [ ] Étude visible sans fichier, palettes sélectionnables et instant explicite ; pas d’animation automatique.
+- [ ] Étude visible sans fichier, palettes sélectionnables et instant explicite ; lecture/pause sur demande, aucune lecture automatique au chargement. Correction M1 : brume sale, matières PS1 90s et parallax caméra réglable ; mouvement réduit respecté.
 - [ ] Une même palette et un même instant redonnent les mêmes pixels, y compris après seek.
 - [ ] Pas de Randomize complet, moteur PS1, sauvegarde ou export vidéo ; portée M1 indiquée dans l’interface.
 

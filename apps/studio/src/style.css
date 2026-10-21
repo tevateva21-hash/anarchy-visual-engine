@@ -70,3 +70,11 @@
     .stage-caption { font-size: .5rem; }
   }
 }
+@layer components {
+  .study-playback { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+  .study-playback span, .study-accent p { color: #a3a79e; font: .65rem/1.6 monospace; }
+  .study-accent { align-self: center; }
+  .study-accent label { display: flex; align-items: center; gap: 8px; }
+  .study-accent input { accent-color: #a89d69; }
+  button:disabled, input:disabled { cursor: not-allowed; opacity: .5; }
+}
