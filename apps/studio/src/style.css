@@ -70,3 +70,22 @@
     .stage-caption { font-size: .5rem; }
   }
 }
+@layer components {
+  .hero-copy h1 { font-size: clamp(2.4rem, 6.3vw, 5.9rem); letter-spacing: -.065em; }
+  .scene-switcher { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .scene-switcher button[aria-pressed=true] { background: #d0b487; color: #171b1b; border-color: #d0b487; }
+  .scene-switcher span { margin-left: auto; font: .6rem/1.6 monospace; letter-spacing: .1em; color: #a3a79e; }
+  .therapy-room { border: 1px solid #40443d; background: #171a1b; margin-bottom: 28px; }
+  .therapy-viewport { aspect-ratio: 16 / 10; width: 100%; background: #12191c; overflow: hidden; }
+  .therapy-viewport canvas { width: 100%; height: 100%; display: block; }
+  .therapy-error { padding: 20px; color: #e3c49b; }
+  .therapy-error button { margin-top: 12px; }
+  .study-playback { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-top: 14px; }
+  .study-playback span { font: .65rem/1.7 monospace; color: #a3a79e; }
+  .room-description { color: #b3b6aa; font-size: .8rem; line-height: 1.8; }
+  button:disabled, input:disabled { cursor: not-allowed; opacity: .5; }
+  @media (max-width: 640px) {
+    .scene-switcher span { width: 100%; margin: 0; }
+    .therapy-viewport { aspect-ratio: 16 / 10; }
+  }
+}

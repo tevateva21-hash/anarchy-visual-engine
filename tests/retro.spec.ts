@@ -21,6 +21,7 @@ async function imageState(canvas: Locator) {
 
 test('Industrial City is opaque low-resolution pixel art, repeatable after scrubbing and palette changes', async ({ page }) => {
   await page.goto('/');
+  await page.getByRole('button', { name: 'Industrial City', exact: true }).click();
   const canvas = page.getByRole('img', { name: /Étude pixel-art Industrial City/ });
   const initial = await imageState(canvas);
   expect(initial.width).toBe(320); expect(initial.height).toBe(180);
@@ -46,6 +47,7 @@ test('art direction stays usable on mobile, with keyboard and reduced motion; au
   await page.setViewportSize({ width: 375, height: 812 });
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
+  await page.getByRole('button', { name: 'Industrial City', exact: true }).click();
   const canvas = page.getByRole('img', { name: /Étude pixel-art Industrial City/ });
   const initial = await imageState(canvas);
   await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));

@@ -5,7 +5,7 @@ import type { AudioAnalysis } from '@anarchy/contracts';
 import { importAudio } from './importAudio';
 import { clearAnalysisCache } from './cache';
 import { Waveform } from './Waveform';
-import { RetroStudy } from './retro/RetroStudy';
+import { SceneShowcase } from './SceneShowcase';
 import './style.css';
 
 function App() {
@@ -38,8 +38,8 @@ function App() {
   };
   const features = analysis ? createAudioFeatureAccessor(analysis).getAudioFeaturesAt(time) : undefined;
   return <main className="studio-shell">
-    <header className="studio-header"><div className="brand-line"><a className="brand" href="#">ANARCHY<span>VISUAL ENGINE</span></a><span className="edition">RETRO STUDIO / VOL. 01</span></div><div className="hero-copy"><div><p className="eyebrow">IMAGES NOCTURNES. FRÉQUENCES BRUTES.</p><h1>LE SON.<br /><span>LA NUIT.</span></h1></div><p className="hero-description">Des mondes industriels, étranges et cinématographiques.<br />Pixels 16-bit. Géométrie PS1.<br /><span>Direction artistique en construction — M1.</span></p></div></header>
-    <RetroStudy />
+    <header className="studio-header"><div className="brand-line"><a className="brand" href="#">ANARCHY<span>VISUAL ENGINE</span></a><span className="edition">THERAPY STUDIES / VOL. 02</span></div><div className="hero-copy"><div><p className="eyebrow">ESPACE MENTAL. FRÉQUENCES PROFONDES.</p><h1>ENTREZ.<br /><span>DÉCONNECTEZ.</span></h1></div><p className="hero-description">Une pièce familière. Quelque chose d’étrange.<br />Volumes sculptés. Ombres lentes. Présences discrètes.<br /><span>Techno Therapy Room — prototype low-poly 3D.</span></p></div></header>
+    <SceneShowcase />
     <section className="panel space-y-4" aria-label="Import audio">
       <div className="section-heading"><span className="eyebrow">BANDE SON / ANALYSE LOCALE</span><span className="edition">AUDIO LAB</span></div>
       <label className="block font-semibold" htmlFor="audio-file">Importer un MP3 ou WAV</label>

@@ -1,6 +1,26 @@
 {
-  "name": "anarchy-visual-engine", "private": true, "type": "module", "version": "0.1.0",
-  "packageManager": "pnpm@11.25.0", "engines": {"node": ">=24 <25"},
-  "scripts": {"dev": "pnpm --filter @anarchy/studio dev", "build": "pnpm typecheck && pnpm --filter @anarchy/studio build", "typecheck": "tsc --noEmit", "test": "vitest run", "test:e2e": "playwright test"},
-  "devDependencies": {"@playwright/test": "^1.56.1", "@types/node": "^24.0.0", "typescript": "^5.9.3", "vitest": "^3.2.4", "fake-indexeddb": "^6.2.4"}
+  "name": "anarchy-visual-engine",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @anarchy/studio dev",
+    "build": "pnpm typecheck && pnpm --filter @anarchy/studio build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "@types/node": "^24.0.0",
+    "@types/three": "^0.180.0",
+    "fake-indexeddb": "^6.2.4",
+    "three": "^0.180.0",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
 }

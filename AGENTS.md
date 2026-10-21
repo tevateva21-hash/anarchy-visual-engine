@@ -10,9 +10,9 @@ Respecter la portée de la demande. Une tâche documentaire n’autorise pas l�
 
 - Interface : React, Vite, TypeScript strict, Tailwind CSS.
 - Analyse : Web Audio API, extraction depuis PCM dans un Worker lorsque possible.
-- Direction : rétro 16-bit pixel art et 32-bit low-poly PS1, sombre, industrielle, étrange et cinématographique. Pas de visualiseur égaliseur générique.
+- Direction principale actuelle : low-poly 3D sombre, élégante et psychologique. Prototype Techno Therapy Room en Three.js, avec matériaux mats facettés et lumière tamisée. Éviter cartoon, arcade et photoréalisme. Industrial City reste une étude accessible, pas la direction principale. Pas de visualiseur égaliseur générique.
 - M1 : étude Industrial City en Canvas 2D à 320×180, agrandissement nearest-neighbor sans lissage. Aucun asset ou police externe. Démonstration artistique autonome, pas encore audio-réactive.
-- M2 introduira le moteur de scènes ; ajouter Three.js uniquement si les scènes low-poly le nécessitent. Les contrats de presets préparent M4 mais ne sont pas un moteur aléatoire.
+- Three.js est justifié par le prototype de pièce en vraie 3D ; conserver son code local au studio, sans introduire un moteur générique ou un export prématuré. Gérer WebGL absent/perdu et libérer les ressources GPU. Les contrats de presets préparent M4 mais ne sont pas un moteur aléatoire.
 - Moteur visuel partagé entre aperçu et composition Remotion, sans dépendance vers les applications.
 - Rendu local : service Node, Remotion/Chromium et FFmpeg, MP4 H.264 avec AAC.
 - Monorepo pnpm simple : `apps/studio`, `apps/renderer`, `packages/contracts`, `packages/audio-analysis`, `packages/visual-engine`, `packages/render-composition`.

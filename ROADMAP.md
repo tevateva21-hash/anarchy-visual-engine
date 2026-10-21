@@ -1,6 +1,10 @@
-# Anarchy Visual Engine — roadmap rétro
+# Anarchy Visual Engine — roadmap et études visuelles
 
 Statut de publication : **descriptions prêtes à publier**, aucun milestone, issue ou Project créé sur GitHub. L’API `api.github.com` renvoie « Forbidden » lors de la vérification du 21 octobre 2026. Les identifiants ci-dessous sont des références documentaires, pas des numéros GitHub.
+
+## Nouvelle exploration : Techno Therapy Room
+
+La branche `feature/techno-therapy-3d`, basée sur main `25de02b`, propose une salle de psychologie en véritable low-poly 3D. Elle devient l’étude principale ; le 16-bit est conservé comme étude historique. Ce prototype ajoute Three.js, des contrôles temporels et des objets subtilement animés, tout en préservant le studio audio. Il ne réalise pas encore moteur générique, mapping audio, presets ou export. Le plan rétro M1–M6 ci-dessous reste l’historique de travail à réévaluer après validation artistique de cette nouvelle direction. Voir [le prototype](docs/techno-therapy-room.md).
 
 ## État et plan incrémental
 

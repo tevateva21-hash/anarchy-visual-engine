@@ -1,6 +1,6 @@
 # Anarchy Visual Engine
 
-Studio existant : import MP3/WAV et analyse audio hors ligne, waveform, lecteur et indicateurs. M1 ajoute une direction rétro industrielle et une étude Industrial City en pixel art, avec trois palettes et un instant de démonstration. React/Vite/TypeScript/Tailwind ; analyse indépendante dans un Worker. La démo n’est pas encore audio-réactive ; pas de Randomize complet, de sauvegarde de presets ou d’export vidéo.
+**Techno Therapy Room** est le nouveau prototype principal : salle de psychologie low-poly 3D en Three.js, sombre et stylisée, avec lecture/pause, poses temporelles, mouvements subtils et deux points de vue. Industrial City reste accessible depuis le sélecteur. Import MP3/WAV, analyse Web Audio/Worker, waveform, lecteur et cache sont conservés. Les scènes sont autonomes ; pas encore de synchronisation musicale ni export vidéo.
 
 ## Développement
 
@@ -27,3 +27,5 @@ Dans un sandbox qui ne permet pas d’écrire sous le répertoire utilisateur, d
 Voir [l’analyse audio](docs/sprint-2-audio-analysis.md), [l’architecture cible](docs/architecture.md) et [les consignes](AGENTS.md).
 
 Direction rétro : [M1 et choix artistiques](docs/retro-art-direction.md). Plan de livraison, issues et Project prêts à publier : [ROADMAP.md](ROADMAP.md).
+
+Voir [le prototype 3D et ses contrôles](docs/techno-therapy-room.md). WebGL 2 est nécessaire pour la pièce. Pour les tests Chromium sans GPU : ajouter `PLAYWRIGHT_SOFTWARE_WEBGL=1` aux variables de la commande e2e.

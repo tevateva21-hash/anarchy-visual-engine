@@ -2,6 +2,16 @@
 
 Statut : architecture cible, adaptée à la direction rétro M1 à partir du studio existant. Le Sprint 2 implémente désormais le studio et l’analyse audio partagée ; voir [les conventions et limites de cette implémentation](sprint-2-audio-analysis.md). Les autres composants restent à développer.
 
+## Prototype actuel : Techno Therapy Room
+
+La direction principale devient une pièce low-poly 3D sombre, élégante, psychologique et légèrement psychédélique. Le prototype est développé depuis le `main` distant au commit `25de02b` sur `feature/techno-therapy-3d` ; il ne fusionne pas la correction PS1 de la branche séparée.
+
+Three.js est ajouté pour rendre une véritable salle en perspective : fauteuils, boiseries, lampes, tapis angulaire et objets animés. Géométries procédurales locales, matériaux mats facettés, ombres et éclairage tamisé ; aucun téléchargement de modèle ou texture. Le code demeure dans `apps/studio/src/therapy`, sans nouveau moteur générique, générateur aléatoire ou export vidéo. Les poses dérivent du temps explicite ; la pause/consultation d’un instant et le mode mouvement réduit sont pris en charge. Des limites de résolution et de pixel ratio bornent les coûts GPU.
+
+Le studio conserve import, lecteur, waveform, analyse et cache sans modifier leurs contrats. Une sélection de vue donne accès à Techno Therapy Room (par défaut) et à Industrial City (étude historique). Changer de scène ne réinitialise ni fichier ni position audio. La pièce est autonome et ne prétend pas être déjà synchronisée au morceau ou exportable en MP4. Une erreur WebGL affiche un message et permet de réessayer ou de choisir Industrial City ; elle ne bloque pas les fonctions audio.
+
+Le contexte, les géométries, matériaux, shadow maps, observateurs et boucles d’animation sont libérés au démontage. Une perte de contexte est traitée explicitement. Voir [le prototype et ses contrôles](techno-therapy-room.md).
+
 ## Direction rétro et état réel après inspection
 
 L’application existante est conservée : `apps/studio` contient l’import, le lecteur natif, le seek, la waveform et les indicateurs. `packages/audio-analysis` réalise le DSP dans un Worker ; IndexedDB garde les analyses. Les fichiers utilisateur restent locaux. Le moteur de scènes, la configuration de presets et le renderer vidéo manquent encore. La sélection actuelle est une position de lecture, pas encore un intervalle d’export.
