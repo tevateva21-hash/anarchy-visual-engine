@@ -29,3 +29,5 @@ Voir [l’analyse audio](docs/sprint-2-audio-analysis.md), [l’architecture cib
 Direction rétro : [M1 et choix artistiques](docs/retro-art-direction.md). Plan de livraison, issues et Project prêts à publier : [ROADMAP.md](ROADMAP.md).
 
 Voir [le prototype 3D et ses contrôles](docs/techno-therapy-room.md). WebGL 2 est nécessaire pour la pièce. Pour les tests Chromium sans GPU : ajouter `PLAYWRIGHT_SOFTWARE_WEBGL=1` aux variables de la commande e2e.
+
+Travelling **Pendulum Push** : [instructions et limites](docs/pendulum-push.md). Dans Techno Therapy Room, cliquer **Play** dans le bloc Pendulum Push ; durée initiale 8 s, réglable entre 2 et 30 s, avec Pause, Replay, timeline et retour à la caméra précédente. Aucun déclenchement audio.

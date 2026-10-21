@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { roomPose, type RoomView } from './roomMotion';
+import type { CameraShotState } from '@anarchy/contracts';
+import { evaluateCameraPreset, PENDULUM_PUSH } from './cameraPresets';
 
 /** A single procedural room, not a generic scene engine. All dimensions are in logical metres. */
 export function createTherapyScene() {
@@ -88,9 +90,11 @@ export function createTherapyScene() {
   cylinder(scene, -0.22, 0.56, 0.25, 0.08, 0.06, 0.16, glass);
   box(scene, 0.16, 0.91, 0.25, 0.025, 0.9, 0.025, bronze);
   box(scene, 0.02, 1.35, 0.25, 0.3, 0.025, 0.025, bronze);
-  const pendulum = new THREE.Group(); pendulum.position.set(-0.12, 1.34, 0.25); scene.add(pendulum);
+  const pendulum = new THREE.Group(); pendulum.name = 'therapy-pendulum'; pendulum.position.set(-0.12, 1.34, 0.25); scene.add(pendulum);
   cylinder(pendulum, 0, -0.24, 0, 0.007, 0.007, 0.48, bronze, 4);
-  mesh(new THREE.OctahedronGeometry(0.09, 0), bronze, pendulum, 0, -0.52, 0);
+  const pendulumBob = mesh(new THREE.OctahedronGeometry(0.09, 0), bronze, pendulum, 0, -0.52, 0);
+  pendulumBob.name = PENDULUM_PUSH.targetObjectName;
+  const bobPosition = new THREE.Vector3();
   const book = box(scene, 0.23, 0.51, 0.53, 0.35, 0.055, 0.24, leather); book.rotation.y = 0.3;
 
   // Framed abstract inkblot: procedural, original, no downloaded texture or lettering.
@@ -138,7 +142,7 @@ export function createTherapyScene() {
   key.shadow.mapSize.set(1024, 1024); key.shadow.bias = -0.0006; scene.add(key, key.target);
   const cold = new THREE.DirectionalLight('#849caa', 1.2); cold.position.set(4, 4, -2); scene.add(cold);
 
-  const update = (time: number, intensity: number, view: RoomView) => {
+  const update = (time: number, intensity: number, view: RoomView, shot?: CameraShotState) => {
     const pose = roomPose(time, intensity, view);
     camera.position.set(...pose.camera); camera.lookAt(0, 1.4, -0.9);
     chairSeat.scale.y = pose.chairBreath;
@@ -147,6 +151,14 @@ export function createTherapyScene() {
     painting.rotation.z = pose.paintingTilt;
     warmLamp.intensity = pose.lampIntensity;
     clockHand.rotation.z = pose.clockAngle;
+    if (shot) {
+      if (shot.presetId !== PENDULUM_PUSH.id) throw new Error('Preset caméra inconnu.');
+      // The bob animates from scene time, independently of camera duration or position.
+      pendulumBob.getWorldPosition(bobPosition);
+      const cameraPose = evaluateCameraPreset(PENDULUM_PUSH, shot.timeSeconds, shot.durationSeconds, [bobPosition.x, bobPosition.y, bobPosition.z]);
+      camera.position.set(...cameraPose.position);
+      camera.lookAt(...cameraPose.target);
+    }
   };
   update(0, 0.5, 'conversation');
   const dispose = () => {

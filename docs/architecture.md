@@ -12,6 +12,14 @@ Le studio conserve import, lecteur, waveform, analyse et cache sans modifier leu
 
 Le contexte, les géométries, matériaux, shadow maps, observateurs et boucles d’animation sont libérés au démontage. Une perte de contexte est traitée explicitement. Voir [le prototype et ses contrôles](techno-therapy-room.md).
 
+## Presets caméra : Pendulum Push
+
+`feature/pendulum-camera` part du prototype sauvegardé `4df9827`. Les contrats indépendants de Three.js (`CameraPresetDefinition`, `CameraShotState`, `CameraShotPose`) se trouvent dans `packages/contracts/src/camera.ts`. L’évaluateur local interpole un chemin de position Bézier cubique et une cible progressive avec easing smootherstep, depuis le temps absolu et une durée configurée. Le FOV existant de 48° et le zoom 1 sont inchangés. Aucun moteur d’export ou déclenchement audio n’est introduit.
+
+La scène conserve ses objets, le pendule suspendu et ses animations. Elle accepte un état de travelling facultatif : la caméra suit le chemin au lieu de la dérive du point de vue, et oriente progressivement son regard vers la masse du pendule animée. Le prototype original reste le comportement par défaut. Les timelines de la pièce et du travelling sont distinctes et leurs lectures exclusives ; le retour restaure le point de vue et l’instant de la pièce laissés en place. Replay réinitialise explicitement l’horloge de lecture sans intégrer de deltas dans les positions. Le mode mouvement réduit interdit l’autoplay tout en gardant le seek manuel.
+
+Les contrôles de sécurité vérifient la trajectoire contre les volumes mondiaux du mobilier réel avec une marge caméra de 16 cm, aux durées 2, 8 et 30 s et aux extrêmes d’intensité. C’est une validation du chemin prévu, pas un moteur de collision pour du mobilier éditable. Voir [la documentation et les contrôles](pendulum-push.md).
+
 ## Direction rétro et état réel après inspection
 
 L’application existante est conservée : `apps/studio` contient l’import, le lecteur natif, le seek, la waveform et les indicateurs. `packages/audio-analysis` réalise le DSP dans un Worker ; IndexedDB garde les analyses. Les fichiers utilisateur restent locaux. Le moteur de scènes, la configuration de presets et le renderer vidéo manquent encore. La sélection actuelle est une position de lecture, pas encore un intervalle d’export.

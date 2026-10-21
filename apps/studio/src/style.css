@@ -89,3 +89,11 @@
     .therapy-viewport { aspect-ratio: 16 / 10; }
   }
 }
+
+@layer components {
+  .camera-shot { border: 1px solid #575342; margin: 0 24px 24px; min-width: 0; }
+  .camera-shot legend { color: #dbbd8f; padding: 0 10px; font-size: 1rem; font-weight: 700; }
+  .camera-shot > p:first-of-type { color: #b3b6aa; font-size: .75rem; line-height: 1.7; margin: 12px 24px 0; }
+  .camera-shot-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 24px 20px; }
+  @media (max-width: 640px) { .camera-shot { margin: 0 12px 20px; } }
+}

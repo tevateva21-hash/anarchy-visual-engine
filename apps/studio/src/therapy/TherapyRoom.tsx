@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { createTherapyScene } from './therapyScene';
 import { ROOM_DURATION, type RoomView } from './roomMotion';
+import { PENDULUM_PUSH } from './cameraPresets';
 
 export default function TherapyRoom() {
   const host = useRef<HTMLDivElement>(null);
@@ -10,12 +11,16 @@ export default function TherapyRoom() {
   const [playing, setPlaying] = useState(false);
   const [intensity, setIntensity] = useState(0.6);
   const [view, setView] = useState<RoomView>('conversation');
+  const [cameraMode, setCameraMode] = useState<'room' | 'pendulum'>('room');
+  const [shotTime, setShotTime] = useState(0);
+  const [shotDuration, setShotDuration] = useState(PENDULUM_PUSH.defaultDurationSeconds);
+  const [playbackRevision, setPlaybackRevision] = useState(0);
   const [error, setError] = useState('');
   const [ready, setReady] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const [reducedMotion, setReducedMotion] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
-  const current = useRef({ time, intensity, view });
-  current.current = { time, intensity: reducedMotion ? 0 : intensity, view };
+  const current = useRef({ time, intensity, view, cameraMode, shotTime, shotDuration });
+  current.current = { time, intensity: reducedMotion ? 0 : intensity, view, cameraMode, shotTime, shotDuration };
 
   useEffect(() => {
     const media = matchMedia('(prefers-reduced-motion: reduce)');
@@ -44,7 +49,8 @@ export default function TherapyRoom() {
     const draw = () => {
       if (contextLost) return;
       const value = current.current;
-      room.update(value.time, value.intensity, value.view);
+      const shot = value.cameraMode === 'pendulum' ? { presetId: PENDULUM_PUSH.id, timeSeconds: value.shotTime, durationSeconds: value.shotDuration } : undefined;
+      room.update(shot ? value.shotTime : value.time, value.intensity, value.view, shot);
       renderer.render(room.scene, room.camera);
     };
     renderAt.current = draw;
@@ -68,21 +74,30 @@ export default function TherapyRoom() {
     };
   }, [attempt]);
 
-  useEffect(() => { renderAt.current?.(); }, [time, view, intensity, reducedMotion]);
+  useEffect(() => { renderAt.current?.(); }, [time, view, intensity, reducedMotion, cameraMode, shotTime, shotDuration]);
   useEffect(() => {
     if (!playing || reducedMotion || !ready) return;
-    const origin = current.current.time;
+    const isShot = cameraMode === 'pendulum';
+    const origin = isShot ? current.current.shotTime : current.current.time;
+    const end = isShot ? shotDuration : ROOM_DURATION;
     let start: number | undefined, request = 0;
     const tick = (timestamp: number) => {
       start ??= timestamp;
-      const next = Math.min(ROOM_DURATION, origin + (timestamp - start) / 1000);
+      const next = Math.min(end, origin + (timestamp - start) / 1000);
       // Cap updates to 24 fps without integrating deltas into the scene state.
-      setTime(Math.round(next * 24) / 24);
-      if (next >= ROOM_DURATION) setPlaying(false); else request = requestAnimationFrame(tick);
+      const displayed = next >= end ? end : origin + Math.floor((next - origin) * 24) / 24;
+      if (isShot) setShotTime(displayed); else setTime(displayed);
+      if (next >= end) setPlaying(false); else request = requestAnimationFrame(tick);
     };
     request = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(request);
-  }, [playing, reducedMotion, ready]);
+  }, [playing, reducedMotion, ready, cameraMode, shotDuration, playbackRevision]);
+
+  const startShot = (replay = false) => {
+    if (replay || cameraMode !== 'pendulum' || shotTime >= shotDuration) setShotTime(0);
+    setCameraMode('pendulum'); setPlaying(true); setPlaybackRevision(n => n + 1);
+  };
+  const restoreCamera = () => { setPlaying(false); setCameraMode('room'); };
 
   return <section className="therapy-room" aria-labelledby="therapy-title">
     <div className="study-heading">
@@ -93,11 +108,37 @@ export default function TherapyRoom() {
     {error && <div className="therapy-error" role="alert"><p>{error}</p><button onClick={() => setAttempt(n => n + 1)}>Réessayer la 3D</button></div>}
     <div className="stage-caption"><span>DEUX FAUTEUILS. UNE PRÉSENCE.</span><span>ÉTUDE 3D PROCÉDURALE</span></div>
     <div className="study-controls">
-      <div><label htmlFor="room-view">Point de vue</label><select id="room-view" value={view} onChange={e => setView(e.target.value as RoomView)}><option value="conversation">Face à face</option><option value="divan">Depuis le divan</option></select></div>
-      <div className="study-time"><label htmlFor="room-time">Instant de la pièce <span className="study-timestamp">{time.toFixed(2)} s</span></label><input id="room-time" type="range" min="0" max={ROOM_DURATION} step={1 / 24} value={time} onChange={e => { setPlaying(false); setTime(Number(e.target.value)); }} /><div className="study-playback"><button disabled={!ready || reducedMotion} onClick={() => { if (!playing && time >= ROOM_DURATION) setTime(0); setPlaying(p => !p); }}>{playing ? 'Pause de la pièce' : 'Animer la pièce'}</button><span>30 s · animation indépendante du morceau</span></div></div>
+      <div><label htmlFor="room-view">Point de vue</label><select id="room-view" value={view} onChange={e => { setView(e.target.value as RoomView); restoreCamera(); }}><option value="conversation">Face à face</option><option value="divan">Depuis le divan</option></select></div>
+      <div className="study-time"><label htmlFor="room-time">Instant de la pièce <span className="study-timestamp">{time.toFixed(2)} s</span></label><input id="room-time" type="range" min="0" max={ROOM_DURATION} step={1 / 24} value={time} onChange={e => { setPlaying(false); setCameraMode('room'); setTime(Number(e.target.value)); }} /><div className="study-playback"><button disabled={!ready || reducedMotion || cameraMode === 'pendulum'} onClick={() => { if (!playing && time >= ROOM_DURATION) setTime(0); setPlaying(p => !p); }}>{playing && cameraMode === 'room' ? 'Pause de la pièce' : 'Animer la pièce'}</button><span>30 s · animation indépendante du morceau</span></div></div>
       <div className="study-time"><label htmlFor="room-intensity">Étrangeté <span className="study-timestamp">{Math.round((reducedMotion ? 0 : intensity) * 100)} %</span></label><input id="room-intensity" type="range" min="0" max="1" step="0.05" value={reducedMotion ? 0 : intensity} disabled={reducedMotion} onChange={e => setIntensity(Number(e.target.value))} /></div>
       <p className="room-description">Cuir bordeaux, bois sombre, lumière de fin de séance. Un pendule hésite, un livre se soulève, le mobilier respire à peine. {reducedMotion ? 'Mouvement réduit : pièce immobile, exploration manuelle disponible.' : 'Lancez l’animation ou explorez un instant précis.'}</p>
     </div>
+    <fieldset className="camera-shot" aria-describedby="pendulum-help">
+      <legend>Pendulum Push</legend>
+      <p id="pendulum-help">Travelling physique du plan large au pendule, focale constante. Aucun déclenchement audio. {cameraMode === 'pendulum' ? 'Travelling sélectionné.' : 'Caméra de la pièce sélectionnée.'}</p>
+      <div className="study-controls">
+        <div className="study-time">
+          <label htmlFor="shot-duration">Durée du travelling <span className="study-timestamp">{shotDuration.toFixed(1)} s</span></label>
+          <input id="shot-duration" type="range" min="2" max="30" step="0.5" value={shotDuration} onChange={e => {
+            const duration = Number(e.target.value); setPlaying(false);
+            setShotTime(value => value / shotDuration * duration); setShotDuration(duration);
+          }} />
+        </div>
+        <div className="study-time">
+          <label htmlFor="shot-time">Timeline Pendulum Push <span className="study-timestamp">{shotTime.toFixed(2)} / {shotDuration.toFixed(1)} s</span></label>
+          <input id="shot-time" type="range" min="0" max={shotDuration} step="0.01" value={shotTime} onChange={e => {
+            setPlaying(false); setCameraMode('pendulum'); setShotTime(Number(e.target.value));
+          }} />
+        </div>
+      </div>
+      <div className="camera-shot-actions">
+        <button aria-label="Play Pendulum Push" disabled={!ready || reducedMotion || (playing && cameraMode === 'pendulum')} onClick={() => startShot()}>Play</button>
+        <button aria-label="Pause Pendulum Push" disabled={!playing || cameraMode !== 'pendulum'} onClick={() => setPlaying(false)}>Pause</button>
+        <button aria-label="Replay Pendulum Push" disabled={!ready || reducedMotion} onClick={() => startShot(true)}>Replay</button>
+        <button disabled={cameraMode === 'room'} onClick={restoreCamera}>Revenir à la caméra initiale</button>
+      </div>
+      <p className="study-note">Étrangeté anime le pendule indépendamment du travelling. Le retour restaure le point de vue et l’instant de la pièce précédents. {reducedMotion && 'Mouvement réduit : lecture désactivée, timeline manuelle disponible.'}</p>
+    </fieldset>
     <p className="study-note">Prototype visuel autonome. Pas encore de synchronisation musicale ou d’export vidéo. Le tapis est une forme textile procédurale évoquant une peau, sans asset animal.</p>
   </section>;
 }

@@ -43,3 +43,7 @@ Ne pas recréer le projet ni remplacer le lecteur musical. Avant de coder : insp
 Scripts existants : `pnpm test`, `pnpm build` (TypeScript inclus), `pnpm test:e2e`. Pour Chromium système : `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium`. Documenter navigateur et tests réellement exécutés. Vérifier aussi absence de débordement sur mobile, navigation clavier et prefers-reduced-motion. Les fonctions de dessin reçoivent leur temps explicitement ; aucune génération aléatoire complète, sauvegarde de presets ou export avant leur milestone.
 
 Les contenus GitHub prêts à publier sont dans ROADMAP.md ; en cas de refus API, ne pas affirmer que milestones, issues, Project ou PR ont été créés.
+
+## Presets caméra — Pendulum Push
+
+La branche feature/pendulum-camera prolonge le prototype sauvegardé feature/techno-therapy-3d sans modifier main. Le travelling déplace physiquement la caméra Three.js à FOV 48° et zoom 1 constants. Les contrats caméra sont dans packages/contracts/src/camera.ts ; l’évaluation Bézier + smootherstep est une fonction du temps absolu. Préserver les points de départ/arrivée et vérifier le dégagement sur la géométrie réelle si le mobilier ou la trajectoire changent. Le pendule existe sous les noms therapy-pendulum et therapy-pendulum-bob. La timeline caméra ne doit jamais appeler play() sur le lecteur audio. Conserver Face à face, Depuis le divan et Étrangeté ; le retour restaure la vue et le temps précédents.

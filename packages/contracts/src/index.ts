@@ -42,3 +42,5 @@ export type {
   PresetParameterPath, RetroPresetConfig, CompatibilityRule,
   RetroPresetDefinition, RandomizeRequest,
 } from './presets';
+
+export type { CameraVector, CameraPresetDefinition, CameraShotState, CameraShotPose } from './camera';
