@@ -47,3 +47,11 @@ Les contenus GitHub prêts à publier sont dans ROADMAP.md ; en cas de refus API
 ## Presets caméra — Pendulum Push
 
 La branche feature/pendulum-camera prolonge le prototype sauvegardé feature/techno-therapy-3d sans modifier main. Le travelling déplace physiquement la caméra Three.js à FOV 48° et zoom 1 constants. Les contrats caméra sont dans packages/contracts/src/camera.ts ; l’évaluation Bézier + smootherstep est une fonction du temps absolu. Préserver les points de départ/arrivée et vérifier le dégagement sur la géométrie réelle si le mobilier ou la trajectoire changent. Le pendule existe sous les noms therapy-pendulum et therapy-pendulum-bob. La timeline caméra ne doit jamais appeler play() sur le lecteur audio. Conserver Face à face, Depuis le divan et Étrangeté ; le retour restaure la vue et le temps précédents.
+
+## Traitement psychédélique
+
+Préserver le prototype et Pendulum Push sur la branche actuelle. Le réglage Psychédélisme doit être indépendant d’Étrangeté, réversible à zéro (rendu initial), limité à une palette sombre désaturée et évalué au temps absolu. Aucun effet de feedback temporel, hasard, arc-en-ciel ou flash plein écran. Libérer les render targets et passes GPU ; conserver redimensionnement et reprise après perte de contexte. Le mode mouvement réduit garde les couleurs statiques mais désactive les déformations animées et les animations des objets. Vérifier le dégagement de la caméra avec les amplitudes maximales.
+
+## Ambiance rouge sang
+
+Le réglage Ambiance propose Rouge sang par défaut et Classique / psychédélique comme variante préservée. Le rouge provient des lumières et matériaux Three.js, sans remplacer le cadrage ni ajouter de filtre plein écran. En rouge, le traitement psychédélique est suspendu ; ses paramètres sont conservés pour le retour à la variante classique. Tester les bascules réversibles et préserver le travelling et l’audio.

@@ -20,6 +20,12 @@ La scène conserve ses objets, le pendule suspendu et ses animations. Elle accep
 
 Les contrôles de sécurité vérifient la trajectoire contre les volumes mondiaux du mobilier réel avec une marge caméra de 16 cm, aux durées 2, 8 et 30 s et aux extrêmes d’intensité. C’est une validation du chemin prévu, pas un moteur de collision pour du mobilier éditable. Voir [la documentation et les contrôles](pendulum-push.md).
 
+## Passe psychédélique de la pièce
+
+Le traitement reste local à la scène Three.js : une passe écran combine glow léger, aberration chromatique discrète, distorsion lente et contraste/colorimétrie mauve/pétrole désaturés. Les cibles de rendu et passes sont redimensionnées et libérées avec le viewport. Un réglage Psychédélisme distinct d’Étrangeté ramène exactement au pipeline de rendu initial à zéro. Aucun nouveau moteur ou système de dépendances n’est introduit.
+
+Les paramètres visuels et mouvements supplémentaires dépendent du temps absolu, du psychédélisme et de l’étrangeté, sans feedback d’image. Pendulum Push conserve sa géométrie et son FOV. Le mouvement réduit neutralise les variations animées en conservant le traitement statique. Les effets ne sont pas déclenchés par le lecteur audio.
+
 ## Direction rétro et état réel après inspection
 
 L’application existante est conservée : `apps/studio` contient l’import, le lecteur natif, le seek, la waveform et les indicateurs. `packages/audio-analysis` réalise le DSP dans un Worker ; IndexedDB garde les analyses. Les fichiers utilisateur restent locaux. Le moteur de scènes, la configuration de presets et le renderer vidéo manquent encore. La sélection actuelle est une position de lecture, pas encore un intervalle d’export.
@@ -212,3 +218,7 @@ Vitest couvrira l’analyse avec silence, sinus et impulsions synthétiques, la 
 Playwright exercera import, lecture, changement de preset, sélection et demande d’export avec un petit fichier de test autorisé. Un test d’intégration réel rendra un extrait puis utilisera `ffprobe` pour contrôler H.264/AAC, dimensions, FPS et durée ; analyser aussi l’alignement des impulsions et des événements visuels. Une réponse HTTP ou un fichier MP4 non vide ne suffit pas.
 
 Ordre conseillé : contrats et chronologie ; analyse et premier preset Canvas ; aperçu avec seek ; transfert local et export court ; validation de synchronisation et nettoyage ; interface complète. Prévoir build et vérification TypeScript en plus des tests. Les validations désormais disponibles pour le Sprint 2 sont décrites dans [sa documentation](sprint-2-audio-analysis.md) ; le rendu vidéo reste hors de son périmètre.
+
+## Variante rouge sang
+
+Une ambiance indépendante applique des lumières cramoisies, un remplissage bordeaux sombre et des matériaux adaptés dans la même scène Three.js. Le mode classique/psychédélique reste disponible ; ses réglages sont conservés. Aucun changement de géométrie, caméra, analyse ou lecture audio. La passe psychédélique est contournée en mode rouge pour préserver la direction validée.

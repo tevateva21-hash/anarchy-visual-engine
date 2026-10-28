@@ -2,6 +2,21 @@
 
 Statut de publication : **descriptions prêtes à publier**, aucun milestone, issue ou Project créé sur GitHub. L’API `api.github.com` renvoie « Forbidden » lors de la vérification du 21 octobre 2026. Les identifiants ci-dessous sont des références documentaires, pas des numéros GitHub.
 
+## Avancement réel — 28 octobre 2026
+
+Les statuts ci-dessous décrivent le code, pas des milestones ou issues créés sur GitHub. Les branches de travail ne sont pas automatiquement intégrées dans main. La direction principale a évolué vers Techno Therapy Room low-poly 3D ; les quatre scènes rétro de la feuille de route initiale ne sont pas toutes développées et restent à réévaluer.
+
+| Milestone | État réel | Disponible / restant |
+| --- | --- | --- |
+| M1 — Direction artistique | Implémentée, en validation utilisateur | Industrial City conservée ; Techno Therapy Room, ambiance Rouge sang par défaut, variante classique/psychédélique préservée. Validation artistique finale et intégration dans main encore à faire. |
+| M2 — Moteur de scènes | Prototypes partiels | Scène Three.js procédurale, poses au temps absolu, deux points de vue et Pendulum Push fonctionnels. Moteur générique, API commune 2D/3D et catalogue complet non livrés. |
+| M3 — Audio Reactive System | Non implémenté ; prérequis prêts | Import MP3/WAV, lecteur, waveform, RMS/bandes/flux, cache et accès temporel fonctionnent. Aucun mapping audio vers lumières, objets ou caméra ; timelines visuelles encore indépendantes de la musique. |
+| M4 — Preset & Random Engine | Préparé par les contrats | Types de presets et interface réutilisable de preset caméra présents. Pas de Randomize avec seed, locks interactifs, résolution de compatibilité ou sauvegarde/chargement des configurations. |
+| M5 — Video Export Engine | Non commencé | Pas encore de service de rendu, jobs ni export MP4 H.264/AAC. |
+| M6 — Advanced Generative Studio | Non commencé | Pas de séquenceur multi-scènes, automation de projet ou export batch. |
+
+La branche courante `feature/pendulum-camera` réunit le prototype 3D, le travelling et les variantes d’image. Le prochain chantier fonctionnel proposé est de brancher les caractéristiques audio existantes sur quelques comportements de la pièce (M3), après validation du rendu ; cela ne constitue pas une livraison du moteur M2 complet. Aucun nouveau développement n’est lancé lors de cette mise à jour de statut.
+
 ## Nouvelle exploration : Techno Therapy Room
 
 La branche `feature/techno-therapy-3d`, basée sur main `25de02b`, propose une salle de psychologie en véritable low-poly 3D. Elle devient l’étude principale ; le 16-bit est conservé comme étude historique. Ce prototype ajoute Three.js, des contrôles temporels et des objets subtilement animés, tout en préservant le studio audio. Il ne réalise pas encore moteur générique, mapping audio, presets ou export. Le plan rétro M1–M6 ci-dessous reste l’historique de travail à réévaluer après validation artistique de cette nouvelle direction. Voir [le prototype](docs/techno-therapy-room.md).

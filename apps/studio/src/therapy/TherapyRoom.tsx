@@ -3,6 +3,8 @@ import * as THREE from 'three';
 import { createTherapyScene } from './therapyScene';
 import { ROOM_DURATION, type RoomView } from './roomMotion';
 import { PENDULUM_PUSH } from './cameraPresets';
+import { createPsychedelicPass } from './psychedelicPass';
+import type { RoomLighting } from './roomLighting';
 
 export default function TherapyRoom() {
   const host = useRef<HTMLDivElement>(null);
@@ -10,6 +12,8 @@ export default function TherapyRoom() {
   const [time, setTime] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [intensity, setIntensity] = useState(0.6);
+  const [psychedelia, setPsychedelia] = useState(0.45);
+  const [lighting, setLighting] = useState<RoomLighting>('blood-red');
   const [view, setView] = useState<RoomView>('conversation');
   const [cameraMode, setCameraMode] = useState<'room' | 'pendulum'>('room');
   const [shotTime, setShotTime] = useState(0);
@@ -19,8 +23,8 @@ export default function TherapyRoom() {
   const [ready, setReady] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const [reducedMotion, setReducedMotion] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
-  const current = useRef({ time, intensity, view, cameraMode, shotTime, shotDuration });
-  current.current = { time, intensity: reducedMotion ? 0 : intensity, view, cameraMode, shotTime, shotDuration };
+  const current = useRef({ time, intensity, view, cameraMode, shotTime, shotDuration, psychedelia, lighting });
+  current.current = { time, intensity: reducedMotion ? 0 : intensity, view, cameraMode, shotTime, shotDuration, psychedelia, lighting };
 
   useEffect(() => {
     const media = matchMedia('(prefers-reduced-motion: reduce)');
@@ -45,20 +49,21 @@ export default function TherapyRoom() {
     renderer.domElement.setAttribute('role', 'img');
     renderer.domElement.setAttribute('aria-label', 'Techno Therapy Room : salle de psychologie low-poly 3D');
     target.appendChild(renderer.domElement);
+    const lookPass = createPsychedelicPass(renderer, room.scene, room.camera);
     let contextLost = false;
     const draw = () => {
       if (contextLost) return;
       const value = current.current;
       const shot = value.cameraMode === 'pendulum' ? { presetId: PENDULUM_PUSH.id, timeSeconds: value.shotTime, durationSeconds: value.shotDuration } : undefined;
-      room.update(shot ? value.shotTime : value.time, value.intensity, value.view, shot);
-      renderer.render(room.scene, room.camera);
+      room.update(shot ? value.shotTime : value.time, value.intensity, value.view, shot, value.psychedelia, value.lighting);
+      lookPass.render(shot ? value.shotTime : value.time, value.lighting === 'blood-red' ? 0 : value.psychedelia, value.intensity);
     };
     renderAt.current = draw;
     const resize = () => {
       const width = Math.max(1, Math.min(target.clientWidth, 1200));
       const height = width * 0.625;
       renderer.setSize(width, height, false);
-      room.camera.aspect = width / height; room.camera.updateProjectionMatrix(); draw();
+      room.camera.aspect = width / height; room.camera.updateProjectionMatrix(); lookPass.resize(width, height); draw();
     };
     const lost = (event: Event) => {
       event.preventDefault(); contextLost = true; setPlaying(false); setReady(false);
@@ -70,11 +75,11 @@ export default function TherapyRoom() {
     return () => {
       renderAt.current = null; observer.disconnect();
       renderer.domElement.removeEventListener('webglcontextlost', lost);
-      room.dispose(); renderer.dispose(); renderer.forceContextLoss(); renderer.domElement.remove();
+      lookPass.dispose(); room.dispose(); renderer.dispose(); renderer.forceContextLoss(); renderer.domElement.remove();
     };
   }, [attempt]);
 
-  useEffect(() => { renderAt.current?.(); }, [time, view, intensity, reducedMotion, cameraMode, shotTime, shotDuration]);
+  useEffect(() => { renderAt.current?.(); }, [time, view, intensity, reducedMotion, cameraMode, shotTime, shotDuration, psychedelia, lighting]);
   useEffect(() => {
     if (!playing || reducedMotion || !ready) return;
     const isShot = cameraMode === 'pendulum';
@@ -111,6 +116,8 @@ export default function TherapyRoom() {
       <div><label htmlFor="room-view">Point de vue</label><select id="room-view" value={view} onChange={e => { setView(e.target.value as RoomView); restoreCamera(); }}><option value="conversation">Face à face</option><option value="divan">Depuis le divan</option></select></div>
       <div className="study-time"><label htmlFor="room-time">Instant de la pièce <span className="study-timestamp">{time.toFixed(2)} s</span></label><input id="room-time" type="range" min="0" max={ROOM_DURATION} step={1 / 24} value={time} onChange={e => { setPlaying(false); setCameraMode('room'); setTime(Number(e.target.value)); }} /><div className="study-playback"><button disabled={!ready || reducedMotion || cameraMode === 'pendulum'} onClick={() => { if (!playing && time >= ROOM_DURATION) setTime(0); setPlaying(p => !p); }}>{playing && cameraMode === 'room' ? 'Pause de la pièce' : 'Animer la pièce'}</button><span>30 s · animation indépendante du morceau</span></div></div>
       <div className="study-time"><label htmlFor="room-intensity">Étrangeté <span className="study-timestamp">{Math.round((reducedMotion ? 0 : intensity) * 100)} %</span></label><input id="room-intensity" type="range" min="0" max="1" step="0.05" value={reducedMotion ? 0 : intensity} disabled={reducedMotion} onChange={e => setIntensity(Number(e.target.value))} /></div>
+      <div><label htmlFor="room-lighting">Ambiance</label><select id="room-lighting" value={lighting} onChange={e => setLighting(e.target.value as RoomLighting)}><option value="blood-red">Rouge sang</option><option value="classic">Classique / psychédélique</option></select><p className="room-description">Éclairage cramoisi, ombres bordeaux et reflets rouges. La pièce, les caméras et le lecteur sont conservés.</p></div>
+      <div className="study-time"><label htmlFor="room-psychedelia">Psychédélisme <span className="study-timestamp">{Math.round(psychedelia * 100)} %</span></label><input id="room-psychedelia" type="range" min="0" max="1" step="0.05" value={psychedelia} disabled={lighting === 'blood-red'} onChange={e => setPsychedelia(Number(e.target.value))} /><p>{lighting === 'blood-red' ? 'Traitement mis de côté : choisissez Classique / psychédélique pour le retrouver.' : '0 % : rendu initial · halo, dérive chromatique et ombres colorées.'} Étrangeté règle les mouvements ; le mode réduit conserve uniquement le traitement statique.</p></div>
       <p className="room-description">Cuir bordeaux, bois sombre, lumière de fin de séance. Un pendule hésite, un livre se soulève, le mobilier respire à peine. {reducedMotion ? 'Mouvement réduit : pièce immobile, exploration manuelle disponible.' : 'Lancez l’animation ou explorez un instant précis.'}</p>
     </div>
     <fieldset className="camera-shot" aria-describedby="pendulum-help">

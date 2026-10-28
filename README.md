@@ -31,3 +31,9 @@ Direction rétro : [M1 et choix artistiques](docs/retro-art-direction.md). Plan 
 Voir [le prototype 3D et ses contrôles](docs/techno-therapy-room.md). WebGL 2 est nécessaire pour la pièce. Pour les tests Chromium sans GPU : ajouter `PLAYWRIGHT_SOFTWARE_WEBGL=1` aux variables de la commande e2e.
 
 Travelling **Pendulum Push** : [instructions et limites](docs/pendulum-push.md). Dans Techno Therapy Room, cliquer **Play** dans le bloc Pendulum Push ; durée initiale 8 s, réglable entre 2 et 30 s, avec Pause, Replay, timeline et retour à la caméra précédente. Aucun déclenchement audio.
+
+Traitement d’image : [Psychédélisme réglable](docs/psychedelic-treatment.md). Comparer 0 % (rendu initial), 45 % (discret) et 100 % ; Étrangeté module les mouvements plus rapides de l’horloge et du pendule. Audio et Pendulum Push restent indépendants.
+
+Ambiance actuelle : **Rouge sang**, appliquée aux lumières et matériaux de la pièce. La variante **Classique / psychédélique** reste disponible dans le sélecteur Ambiance. [Détails et préservation de la variante précédente](docs/blood-red-room.md).
+
+État des milestones : [avancement réel daté dans ROADMAP.md](ROADMAP.md#avancement-réel--28-octobre-2026). La version Rouge sang et la variante psychédélique se testent depuis `feature/pendulum-camera`, sans nécessiter de fusion dans main. Voir [les commandes Codespaces](docs/blood-red-room.md#tester-la-branche-github).

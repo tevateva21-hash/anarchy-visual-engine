@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import { roomPose, type RoomView } from './roomMotion';
 import type { CameraShotState } from '@anarchy/contracts';
 import { evaluateCameraPreset, PENDULUM_PUSH } from './cameraPresets';
+import { psychedelicLook } from './psychedelicLook';
+import { BLOOD_RED, type RoomLighting } from './roomLighting';
 
 /** A single procedural room, not a generic scene engine. All dimensions are in logical metres. */
 export function createTherapyScene() {
@@ -135,15 +137,23 @@ export function createTherapyScene() {
     const light = new THREE.PointLight('#e3b778', 16, 8, 2); light.position.set(x, 1.87, z); scene.add(light);
     return light;
   };
-  const warmLamp = lamp(-3.4, 0.7); lamp(2.4, -2.7);
+  const warmLamp = lamp(-3.4, 0.7); const rearLamp = lamp(2.4, -2.7);
   const fill = new THREE.HemisphereLight('#a9b9c0', '#292320', 1.2); scene.add(fill);
   const key = new THREE.SpotLight('#d5ba91', 45, 16, Math.PI / 3, 0.8, 1.8);
   key.position.set(-1.8, 4, 2.5); key.target.position.set(0, 0, -0.5); key.castShadow = true;
   key.shadow.mapSize.set(1024, 1024); key.shadow.bias = -0.0006; scene.add(key, key.target);
   const cold = new THREE.DirectionalLight('#849caa', 1.2); cold.position.set(4, 4, -2); scene.add(cold);
 
-  const update = (time: number, intensity: number, view: RoomView, shot?: CameraShotState) => {
-    const pose = roomPose(time, intensity, view);
+  const amber = new THREE.Color('#e3b778'), mauve = new THREE.Color('#b39ab4');
+  const olive = new THREE.Color('#90a38a'), keyBase = new THREE.Color('#d5ba91');
+  const keyTint = new THREE.Color('#b2a0c1'), coldBase = new THREE.Color('#849caa');
+  const coldTint = new THREE.Color('#749e9f');
+  const update = (time: number, intensity: number, view: RoomView, shot?: CameraShotState, psychedelia = 0, lighting: RoomLighting = 'classic') => {
+    if (lighting !== 'classic' && lighting !== 'blood-red') throw new Error('Ambiance inconnue.');
+    const red = lighting === 'blood-red';
+    const effectivePsychedelia = red ? 0 : psychedelia;
+    const pose = roomPose(time, intensity, view, effectivePsychedelia);
+    const look = psychedelicLook(time, effectivePsychedelia, intensity);
     camera.position.set(...pose.camera); camera.lookAt(0, 1.4, -0.9);
     chairSeat.scale.y = pose.chairBreath;
     pendulum.rotation.z = pose.pendulumAngle;
@@ -151,6 +161,30 @@ export function createTherapyScene() {
     painting.rotation.z = pose.paintingTilt;
     warmLamp.intensity = pose.lampIntensity;
     clockHand.rotation.z = pose.clockAngle;
+    warmLamp.color.lerpColors(amber, mauve, psychedelia * (0.5 + 0.15 * look.drift));
+    rearLamp.color.lerpColors(amber, olive, psychedelia * (0.65 - 0.1 * look.drift));
+    key.color.lerpColors(keyBase, keyTint, psychedelia * 0.65);
+    cold.color.lerpColors(coldBase, coldTint, psychedelia * 0.8);
+    fill.intensity = look.fillIntensity;
+    // Restore every altered property on each evaluation, including when returning to classic.
+    if (scene.background instanceof THREE.Color) scene.background.set(red ? '#12050a' : '#12191c');
+    scene.fog!.color.set(red ? '#260910' : '#192224');
+    wall.color.set(red ? BLOOD_RED.wall : '#48504a');
+    leather.color.set(red ? BLOOD_RED.leather : '#522f32');
+    cushion.color.set(red ? BLOOD_RED.cushion : '#704346');
+    floor.color.set(red ? BLOOD_RED.floor : '#483e31');
+    wood.color.set(red ? BLOOD_RED.wood : '#302923');
+    shadeMat.color.set(red ? BLOOD_RED.shade : '#b8a981');
+    floor.roughness = red ? 0.7 : 0.9; floor.metalness = red ? 0.08 : 0;
+    fill.color.set(red ? BLOOD_RED.fill : '#a9b9c0');
+    fill.groundColor.set(red ? BLOOD_RED.ground : '#292320');
+    key.intensity = red ? 52 : 45; cold.intensity = red ? 0.8 : 1.2;
+    rearLamp.intensity = red ? 25 : 16;
+    if (red) {
+      warmLamp.color.set(BLOOD_RED.lamp); warmLamp.intensity = pose.lampIntensity * 1.4;
+      rearLamp.color.set(BLOOD_RED.rearLamp); key.color.set(BLOOD_RED.key);
+      cold.color.set(BLOOD_RED.rim); fill.intensity = 0.8;
+    }
     if (shot) {
       if (shot.presetId !== PENDULUM_PUSH.id) throw new Error('Preset caméra inconnu.');
       // The bob animates from scene time, independently of camera duration or position.

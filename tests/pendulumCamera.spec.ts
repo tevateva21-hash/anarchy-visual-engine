@@ -63,6 +63,8 @@ test('Play Pause Replay and finite duration use absolute time without triggering
   await replay.click(); await page.clock.runFor(100);
   expect(Number(await timeline.inputValue())).toBeLessThan(0.2);
   await page.emulateMedia({ reducedMotion: 'reduce' });
+  // Media-query change is dispatched on a rendering cycle; advance the installed fake clock.
+  await page.clock.runFor(100);
   await expect(play).toBeDisabled(); await expect(replay).toBeDisabled();
   await expect(pause).toBeDisabled(); const reducedTime = await timeline.inputValue();
   await page.clock.runFor(500); await expect(timeline).toHaveValue(reducedTime);

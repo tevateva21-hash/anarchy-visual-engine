@@ -83,11 +83,11 @@ describe('Pendulum Push in the actual therapy room', () => {
       room.scene.traverse(object => { if (object instanceof THREE.Mesh) meshes.push(object); });
       const bounds = new THREE.Box3();
       // Cover all supported durations at both extremes of object movement intensity.
-      for (const duration of [2, 8, 30]) for (const intensity of [0, 1]) {
+      for (const duration of [2, 8, 30]) for (const intensity of [0, 1]) for (const psychedelia of [0, 1]) {
         let previous: THREE.Vector3 | undefined;
         for (let i = 0; i <= 128; i++) {
           const t = i / 128 * duration;
-          room.update(t, intensity, 'conversation', shot(t, duration)); room.scene.updateMatrixWorld(true);
+          room.update(t, intensity, 'conversation', shot(t, duration), psychedelia); room.scene.updateMatrixWorld(true);
           const position = room.camera.position.clone();
           // Inflate by half a sample step as well as physical clearance, covering the segment between samples.
           const sweptMargin = CAMERA_CLEARANCE + (previous ? previous.distanceTo(position) / 2 : 0);
